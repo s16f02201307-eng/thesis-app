@@ -4,15 +4,13 @@ import os
 import requests
 
 # ==========================================
-# ★設定エリア（あなたのURLから抽出しました！）★
+# ★設定完了！解析したGoogleフォームIDを入れました★
 # ==========================================
-
-# 1. Googleフォームの送信先URL
-# (viewform を formResponse に書き換え済みです)
+# 1. 送信先URL (viewform → formResponse に変換済み)
 FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSd5N7c-TevI37lnUok95swdvbBsckYJqiQKgqtVslbSjEXU3g/formResponse"
 
-# 2. 質問項目のID
-# (いただいたURLの順番通りに割り当てました)
+# 2. 質問のID (URLから解析済み)
+# ※フォームの並び順が「四聖堂35→四聖堂10→南泉寺35→南泉寺10」である前提です
 ENTRY_IDS = {
     "ex1": "entry.570602587",   # 四聖堂 35mm
     "ex2": "entry.430214277",   # 四聖堂 10mm
@@ -21,9 +19,9 @@ ENTRY_IDS = {
 }
 # ==========================================
 
-base_img_folder = "images"
+# ★画像フォルダの場所を「現在の場所 (.)」に設定
+base_img_folder = "."
 
-# 実験の構成
 experiments = {
     "ex1": {"name": "四聖堂 (標準 35mm)", "folder": "四聖堂1500 35mm"},
     "ex2": {"name": "四聖堂 (広角 10mm)", "folder": "四聖堂1500 10mm"},
@@ -32,106 +30,47 @@ experiments = {
 }
 
 st.set_page_config(page_title="建築空間の視覚実験", layout="centered")
-
-# --- デザイン調整 ---
-st.markdown("""
-<style>
-    .stTabs [data-baseweb="tab-list"] { gap: 10px; }
-    .stTabs [data-baseweb="tab"] { height: 50px; }
-    .stButton button { width: 100%; font-weight: bold; }
-</style>
-""", unsafe_allow_html=True)
+st.markdown("""<style>.stTabs [data-baseweb="tab-list"] { gap: 10px; } .stTabs [data-baseweb="tab"] { height: 50px; }</style>""", unsafe_allow_html=True)
 
 st.title("建築空間の視覚実験")
-st.write("ご協力ありがとうございます。以下の4つのタブを切り替えて、それぞれの空間で**「最も好ましい」**と感じる距離を選んでください。")
+st.write("各タブで画像をスライドさせ、最も好ましい距離を選んでください。")
+st.info("※スライダーを左（初期位置）にすると「一番奥」、右に動かすと「手前」に移動します。")
 
-# --- データの保持 ---
 if 'answers' not in st.session_state:
     st.session_state.answers = {"ex1": 0, "ex2": 0, "ex3": 0, "ex4": 0}
 if 'submitted' not in st.session_state:
     st.session_state.submitted = False
 
-# --- 送信完了時の画面 ---
 if st.session_state.submitted:
-    st.success("✅ 送信が完了しました！")
-    st.info("ご協力ありがとうございました。ブラウザを閉じて終了してください。")
+    st.success("✅ 送信完了！ありがとうございました。")
+    st.balloons()
     st.stop()
 
-# --- タブの作成 ---
 tab1, tab2, tab3, tab4 = st.tabs(["① 四聖堂 35mm", "② 四聖堂 10mm", "③ 南泉寺 35mm", "④ 南泉寺 10mm"])
 
-# --- 実験画面を作る関数 ---
-def show_experiment(tab, ex_key):
+def show_ex(tab, key):
     with tab:
-        info = experiments[ex_key]
-        folder_path = os.path.join(base_img_folder, info["folder"])
-        
-        # フォルダチェック
-        if not os.path.exists(folder_path):
-            st.error(f"エラー: 画像フォルダ '{info['folder']}' が見つかりません。")
+        path = os.path.join(base_img_folder, experiments[key]["folder"])
+        # エラー処理
+        if not os.path.exists(path):
+            st.error(f"エラー: 画像フォルダが見つかりません ({path})")
             return
-
-        # 画像読み込み
-        files = sorted([f for f in os.listdir(folder_path) if f.endswith(".jpg")])
+        files = sorted([f for f in os.listdir(path) if f.endswith(".jpg")])
         if not files:
-            st.error("エラー: 画像が入っていません。")
+            st.error("画像ファイルが入っていません")
             return
-
-        st.subheader(info["name"])
         
-        # スライダー
-        val = st.slider(
-            "スライダーを動かして距離を調整してください", 
-            0, len(files)-1, 
-            st.session_state.answers[ex_key],
-            key=f"slider_{ex_key}"
-        )
-        st.session_state.answers[ex_key] = val
-
+        st.subheader(experiments[key]["name"])
+        
+        # スライダー作成
+        val = st.slider("距離調整", 0, len(files)-1, st.session_state.answers[key], key=f"s_{key}")
+        st.session_state.answers[key] = val
+        
+        # ★逆転ロジック (左=奥No.Max, 右=手前No.1)
+        reversed_index = (len(files) - 1) - val
+        
         # 画像表示
-        img_path = os.path.join(folder_path, files[val])
-        image = Image.open(img_path)
-        st.image(image, caption=f"現在の視点: No. {val + 1}", use_container_width=True)
+        file_to_show = files[reversed_index]
+        st.image(Image.open(os.path.join(path, file_to_show)), caption=f"現在の位置: No.{reversed_index + 1}", use_container_width=True)
 
-# 各タブに中身を表示
-show_experiment(tab1, "ex1")
-show_experiment(tab2, "ex2")
-show_experiment(tab3, "ex3")
-show_experiment(tab4, "ex4")
-
-st.markdown("---")
-st.header("確認と送信")
-
-# 確認表示
-col1, col2 = st.columns(2)
-with col1:
-    st.info(f"**四聖堂 35mm:** No.{st.session_state.answers['ex1'] + 1}")
-    st.info(f"**四聖堂 10mm:** No.{st.session_state.answers['ex2'] + 1}")
-with col2:
-    st.info(f"**南泉寺 35mm:** No.{st.session_state.answers['ex3'] + 1}")
-    st.info(f"**南泉寺 10mm:** No.{st.session_state.answers['ex4'] + 1}")
-
-st.write("全ての選択が終わったら、下のボタンを押してください。")
-
-# 送信ボタン
-if st.button("この内容で送信する", type="primary"):
-    # Googleフォームへ送るデータ
-    # (+1 しているのは、プログラムの「0番」を人間の「1番」に直すため)
-    form_data = {
-        ENTRY_IDS["ex1"]: st.session_state.answers['ex1'] + 1,
-        ENTRY_IDS["ex2"]: st.session_state.answers['ex2'] + 1,
-        ENTRY_IDS["ex3"]: st.session_state.answers['ex3'] + 1,
-        ENTRY_IDS["ex4"]: st.session_state.answers['ex4'] + 1
-    }
-    
-    try:
-        # 裏側でひっそり送信
-        response = requests.post(FORM_URL, data=form_data)
-        
-        if response.status_code == 200:
-            st.session_state.submitted = True
-            st.rerun() # 画面更新して完了メッセージへ
-        else:
-            st.error("送信に失敗しました。もう一度押してみてください。")
-    except Exception as e:
-        st.error(f"エラーが発生しました: {e}")
+show
