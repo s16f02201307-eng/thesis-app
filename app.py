@@ -22,18 +22,18 @@ ENTRY_IDS = {
 base_img_folder = "."
 
 experiments = {
-    "ex1": {"name": "四聖堂 (標準 35mm)", "folder": "四聖堂1500 35mm"},
-    "ex2": {"name": "四聖堂 (広角 10mm)", "folder": "四聖堂1500 10mm"},
-    "ex3": {"name": "南泉寺 (標準 35mm)", "folder": "南泉寺 35mm"},
-    "ex4": {"name": "南泉寺 (広角 10mm)", "folder": "南泉寺 10mm"},
+    "ex1": {"name": "四聖堂 (標準)", "folder": "四聖堂1500 35mm"},
+    "ex2": {"name": "四聖堂 (広角)", "folder": "四聖堂1500 10mm"},
+    "ex3": {"name": "南泉寺 (標準)", "folder": "南泉寺 35mm"},
+    "ex4": {"name": "南泉寺 (広角)", "folder": "南泉寺 10mm"},
 }
 
-st.set_page_config(page_title="建築空間の視覚実験", layout="centered")
+st.set_page_config(page_title="建築の視覚実験", layout="centered")
 st.markdown("""<style>.stTabs [data-baseweb="tab-list"] { gap: 10px; } .stTabs [data-baseweb="tab"] { height: 50px; }</style>""", unsafe_allow_html=True)
 
-st.title("建築空間の視覚実験")
+st.title("建築の視覚実験")
 st.write("各タブで画像をスライドさせ、最も好ましい距離を選んでください。")
-st.info("※スライダーを左（初期位置）にすると「一番奥」、右に動かすと「手前」に移動します。")
+st.info("※スライダーを左（初期位置）にすると「手前」、右に動かすと「一番奥」に移動します。")
 
 if 'answers' not in st.session_state:
     st.session_state.answers = {"ex1": 0, "ex2": 0, "ex3": 0, "ex4": 0}
@@ -105,3 +105,4 @@ if st.button("送信する", type="primary"):
         except: st.error("エラーが発生しました")
     else:
         st.error("画像フォルダエラーのため送信できません")
+
