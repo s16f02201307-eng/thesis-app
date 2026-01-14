@@ -4,9 +4,9 @@ import os
 import requests
 
 # ==========================================
-# ★重要：ここだけ、あなたの手元の正しいIDに書き換えてください！★
+# ★ここに、あなたのGoogleフォームの情報を入れてください★
 # ==========================================
-# 1. 送信先URL (viewform ではなく formResponse)
+# 1. 送信先URL (viewform ではなく formResponse になっているか確認！)
 FORM_URL = "https://docs.google.com/forms/d/e/XXXXXXXXXXXXXXXXXXXX/formResponse"
 
 # 2. 質問のID (entry.xxxxx)
@@ -18,7 +18,7 @@ ENTRY_IDS = {
 }
 # ==========================================
 
-# 画像フォルダの場所
+# ★修正1: 画像フォルダの場所を「ここ(.)」に変更しました
 base_img_folder = "."
 
 experiments = {
@@ -50,6 +50,7 @@ tab1, tab2, tab3, tab4 = st.tabs(["① 四聖堂 35mm", "② 四聖堂 10mm", "�
 def show_ex(tab, key):
     with tab:
         path = os.path.join(base_img_folder, experiments[key]["folder"])
+        # エラー処理
         if not os.path.exists(path):
             st.error(f"エラー: 画像フォルダが見つかりません ({path})")
             return
@@ -64,14 +65,13 @@ def show_ex(tab, key):
         val = st.slider("距離調整", 0, len(files)-1, st.session_state.answers[key], key=f"s_{key}")
         st.session_state.answers[key] = val
         
-        # ★逆転ロジック (左=奥No.Max, 右=手前No.1)
-        # 画面表示用の番号を計算
-        display_no = (len(files) - 1) - val + 1
+        # ★修正2: 逆転ロジック (左=奥No.Max, 右=手前No.1)
+        # files[0]がNo.1(手前)と仮定すると、逆順にするには:
+        reversed_index = (len(files) - 1) - val
         
         # 画像表示
-        # インデックスは0始まりなので -1 する
-        file_to_show = files[display_no - 1] 
-        st.image(Image.open(os.path.join(path, file_to_show)), caption=f"現在の位置: No.{display_no}", use_container_width=True)
+        file_to_show = files[reversed_index]
+        st.image(Image.open(os.path.join(path, file_to_show)), caption=f"現在の位置: No.{reversed_index + 1}", use_container_width=True)
 
 show_ex(tab1, "ex1")
 show_ex(tab2, "ex2")
@@ -90,8 +90,7 @@ if st.button("送信する", type="primary"):
              continue
         files = sorted([f for f in os.listdir(path) if f.endswith(".jpg")])
         
-        # ★ここが修正ポイント！
-        # 送信するときも「逆転させた番号（画面に見えている番号）」を送る
+        # 逆転計算した「本当のNo」を計算
         slider_val = st.session_state.answers[k]
         real_no = (len(files) - 1) - slider_val + 1
         
