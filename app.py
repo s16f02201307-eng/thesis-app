@@ -102,9 +102,10 @@ if st.button("送信する", type="primary"):
                 st.session_state.submitted = True
                 st.rerun()
             else: st.error("送信に失敗しました。繰り返し起きてしまう場合はお手数ですがこちらに数値を入力してください→→→→→　https://forms.gle/XvdWU5KBS9vbGkZe6")
-        except: st.error("エラーが発生しました")
+        except: st.error("もう一度押してください")
     else:
         st.error("画像フォルダエラーのため送信できません")
+
 
 
 
