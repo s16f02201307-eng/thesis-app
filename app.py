@@ -43,7 +43,7 @@ st.set_page_config(page_title="建築の視覚実験", layout="centered")
 st.markdown("""<style>.stTabs [data-baseweb="tab-list"] { gap: 10px; } .stTabs [data-baseweb="tab"] { height: 50px; }</style>""", unsafe_allow_html=True)
 
 st.title("建築の視覚実験")
-st.write("各タブで画像をスライドさせ、指示された距離を選んでください。　　　　　　　　　　　　（【軒反り】 軒先（屋根の端）が上方に反（そ）っていること。また、その反り。）")
+st.write("各タブで画像をスライドさせ、指示された距離を選んでください。　　　　　　　　　　　　　　　（【軒反り】 軒先（屋根の端）が上方に反（そ）っていること。また、その反り。）")
 st.info("①～⑧まで全八問あります。ご協力お願いします")
 
 # セッション状態の初期化
@@ -119,6 +119,7 @@ if st.button("送信する", type="primary"):
             st.error("もう一度押してください")
     else:
         st.error("画像フォルダエラーのため送信できません")
+
 
 
 
