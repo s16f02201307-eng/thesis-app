@@ -10,10 +10,10 @@ import requests
 FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSd5N7c-TevI37lnUok95swdvbBsckYJqiQKgqtVslbSjEXU3g/formResponse"
 
 ENTRY_IDS = {
-    "ex1": "entry.570602587",   # 四聖堂 35mm
-    "ex2": "entry.430214277",   # 四聖堂 10mm
-    "ex3": "entry.1985209908",  # 南泉寺 35mm
-    "ex4": "entry.1184762339"   # 南泉寺 10mm
+    "ex1": "entry.570602587",   # 四聖堂 標準
+    "ex2": "entry.430214277",   # 四聖堂 広角
+    "ex3": "entry.1985209908",  # 南泉寺 標準
+    "ex4": "entry.1184762339"   # 南泉寺 広角
 }
 # ==========================================
 
@@ -41,11 +41,11 @@ if 'submitted' not in st.session_state:
     st.session_state.submitted = False
 
 if st.session_state.submitted:
-    st.success("✅ 送信完了！ありがとうございました。")
+    st.success("✅ 送信完了！ご協力ありがとうございました。")
     st.balloons()
     st.stop()
 
-tab1, tab2, tab3, tab4 = st.tabs(["① 四聖堂 35mm", "② 四聖堂 10mm", "③ 南泉寺 35mm", "④ 南泉寺 10mm"])
+tab1, tab2, tab3, tab4 = st.tabs(["① 四聖堂 標準", "② 四聖堂 広角", "③ 南泉寺 標準", "④ 南泉寺 広角"])
 
 def show_ex(tab, key):
     with tab:
@@ -105,5 +105,6 @@ if st.button("送信する", type="primary"):
         except: st.error("エラーが発生しました")
     else:
         st.error("画像フォルダエラーのため送信できません")
+
 
 
