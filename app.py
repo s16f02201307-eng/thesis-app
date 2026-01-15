@@ -4,23 +4,23 @@ import os
 import requests
 
 # ==========================================
-# ★ここに、あなたのGoogleフォームの情報を入れてください★
+# ★ここに、履歴から救出した「正しいID」を戻してください！★
 # ==========================================
-# 1. 送信先URL (viewform ではなく formResponse になっているか確認！)
-FORM_URL = "https://docs.google.com/forms/d/e/XXXXXXXXXXXXXXXXXXXX/formResponse"
+# フォームIDとエントリーIDを履歴のURLから復元しました
+FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSd5N7c-TevI37lnUok95swdvbBsckYJqiQKgqtVslbSjEXU3g/formResponse"
 
-# 2. 質問のID (entry.xxxxx)
 ENTRY_IDS = {
-    "ex1": "entry.11111111",  # 四聖堂 35mm
-    "ex2": "entry.22222222",  # 四聖堂 10mm
-    "ex3": "entry.33333333",  # 南泉寺 35mm
-    "ex4": "entry.44444444"   # 南泉寺 10mm
+    "ex1": "entry.570602587",   # 四聖堂 35mm
+    "ex2": "entry.430214277",   # 四聖堂 10mm
+    "ex3": "entry.1985209908",  # 南泉寺 35mm
+    "ex4": "entry.1184762339"   # 南泉寺 10mm
 }
 # ==========================================
 
-# ★修正1: 画像フォルダの場所を「ここ(.)」に変更しました
+# 画像フォルダ設定
 base_img_folder = "."
 
+# ... (以下、元のコードと同じ)
 experiments = {
     "ex1": {"name": "四聖堂 (標準)", "folder": "四聖堂1500 35mm"},
     "ex2": {"name": "四聖堂 (広角)", "folder": "四聖堂1500 10mm"},
@@ -105,4 +105,5 @@ if st.button("送信する", type="primary"):
         except: st.error("エラーが発生しました")
     else:
         st.error("画像フォルダエラーのため送信できません")
+
 
