@@ -101,10 +101,11 @@ if st.button("送信する", type="primary"):
             if requests.post(FORM_URL, data=data).status_code == 200:
                 st.session_state.submitted = True
                 st.rerun()
-            else: st.error("送信に失敗しました")
+            else: st.error("送信に失敗しました。繰り返し起きてしまう場合はお手数ですがこちらに数値を入力してください→→→→→　https://forms.gle/XvdWU5KBS9vbGkZe6")
         except: st.error("エラーが発生しました")
     else:
         st.error("画像フォルダエラーのため送信できません")
+
 
 
 
