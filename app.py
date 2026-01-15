@@ -47,7 +47,12 @@ st.write("各タブで画像をスライドさせ、指示された距離を選�
 st.info("①～⑧まで全八問あります。ご協力お願いします")
 
 if 'answers' not in st.session_state:
-    st.session_state.answers = {key: 0 for key in experiments.keys()}
+    st.session_state.answers = {}
+
+# 各問題（ex1〜ex8）の回答データが存在するか確認し、なければ初期化
+for key in experiments.keys():
+    if key not in st.session_state.answers:
+        st.session_state.answers[key] = 0
 if 'submitted' not in st.session_state:
     st.session_state.submitted = False
 
@@ -124,3 +129,4 @@ if st.button("送信する", type="primary"):
     else:
         # 元のエラーメッセージを維持
         st.error("画像フォルダエラーのため送信できません")
+
