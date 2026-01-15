@@ -33,7 +33,7 @@ st.markdown("""<style>.stTabs [data-baseweb="tab-list"] { gap: 10px; } .stTabs [
 
 st.title("建築の視覚実験")
 st.write("各タブで画像をスライドさせ、最も好ましい距離を選んでください。")
-st.info("※スライダーを左（初期位置）にすると「手前」、右に動かすと「一番奥」に移動します。")
+st.info("①～④まで四問あります。ご協力お願いします")
 
 if 'answers' not in st.session_state:
     st.session_state.answers = {"ex1": 0, "ex2": 0, "ex3": 0, "ex4": 0}
@@ -105,6 +105,7 @@ if st.button("送信する", type="primary"):
         except: st.error("もう一度押してください")
     else:
         st.error("画像フォルダエラーのため送信できません")
+
 
 
 
